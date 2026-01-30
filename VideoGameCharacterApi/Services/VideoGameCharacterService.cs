@@ -1,8 +1,10 @@
-﻿using VideoGameCharacterApi.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using VideoGameCharacterApi.Data;
+using VideoGameCharacterApi.Models;
 
 namespace VideoGameCharacterApi.Services
 {
-    public class VideoGameCharacterService : IVideoGameCharacterService
+    public class VideoGameCharacterService(AppDbContext context) : IVideoGameCharacterService
     {
         static List<Character> characters = new List<Character>
         {
@@ -23,12 +25,12 @@ namespace VideoGameCharacterApi.Services
         }
 
         public async Task<List<Character>> GetAllCharacterAsync()
-            => await Task.FromResult(characters);
+            => await context.Characters.ToListAsync();
 
         public async Task<Character?> GetCharacterByIdAsync(int id)
         {
-            var result = characters.FirstOrDefault(c => c.Id == id);
-            return await Task.FromResult(result);
+            var result = await context.Characters.FindAsync(id);
+            return result;
         }
 
         public Task<bool> UpdateCharacterAsync(int id, Character character)
