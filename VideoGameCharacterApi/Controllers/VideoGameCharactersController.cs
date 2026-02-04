@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using VideoGameCharacterApi.Dtos;
 using VideoGameCharacterApi.Models;
 using VideoGameCharacterApi.Services;
@@ -8,6 +9,7 @@ namespace VideoGameCharacterApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class VideoGameCharactersController(IVideoGameCharacterService service) : ControllerBase
     {
 
