@@ -1,46 +1,47 @@
-﻿using Microsoft.EntityFrameworkCore;
-using VideoGameCharacterApi.Data;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using VideoGameCharacterApi.Dtos;
 using VideoGameCharacterApi.Models;
+using VideoGameCharacterApi.Repositories;
 
 namespace VideoGameCharacterApi.Services
 {
-    public class VideoGameCharacterService(AppDbContext context) : IVideoGameCharacterService
+    // Application/service layer depends on repository abstraction
+    public class VideoGameCharacterService : IVideoGameCharacterService
     {
-        static List<Character> characters = new List<Character>
-        {
-            new Character { Id = 1, Name = "Mario", Game = "Super Mario Bros.", Role = "Hero" },
-            new Character { Id = 2, Name = "Link", Game = "The Legend of Zelda", Role = "Hero" },
-            new Character { Id = 3, Name = "Bowser", Game = "Super Mario Bros.", Role = "Villain" },
-            new Character { Id = 4, Name = "Zelda", Game = "The Legend of Zelda", Role = "Princess" }
-        };
+        private readonly ICharacterRepository _repository;
 
-        public async Task<List<CharacterResponse>> GetAllCharacterAsync()
-            => await context.Characters.Select(c => new CharacterResponse
+        public VideoGameCharacterService(ICharacterRepository repository) => _repository = repository;
+
+        public async Task<List<CharacterResponse>> GetAllCharacterAsync(CancellationToken cancellationToken)
+        {
+            var entities = await _repository.GetAllAsync(cancellationToken);
+            return entities.Select(c => new CharacterResponse
             {
                 Id = c.Id,
                 Name = c.Name,
                 Game = c.Game,
                 Role = c.Role
-            }).ToListAsync();
-
-        public async Task<CharacterResponse?> GetCharacterByIdAsync(int id)
-        {
-            var result = await context.Characters
-                .Where(c => c.Id == id)
-                .Select(c => new CharacterResponse
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Game = c.Game,
-                    Role = c.Role
-                })
-                .FirstOrDefaultAsync();
-
-            return result;
+            }).ToList();
         }
 
-        public async Task<CharacterResponse> AddCharacterAsync(CreateCharacterRequest character)
+        public async Task<CharacterResponse?> GetCharacterByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            var entity = await _repository.GetByIdAsync(id, cancellationToken);
+            if (entity is null) return null;
+
+            return new CharacterResponse
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Game = entity.Game,
+                Role = entity.Role
+            };
+        }
+
+        public async Task<CharacterResponse> AddCharacterAsync(CreateCharacterRequest character, CancellationToken cancellationToken)
         {
             var newCharacter = new Character
             {
@@ -49,8 +50,8 @@ namespace VideoGameCharacterApi.Services
                 Role = character.Role
             };
 
-            context.Characters.Add(newCharacter);
-            await context.SaveChangesAsync();
+            await _repository.Add(newCharacter);
+            await _repository.SaveChangesAsync(cancellationToken);
 
             return new CharacterResponse
             {
@@ -61,27 +62,27 @@ namespace VideoGameCharacterApi.Services
             };
         }
 
-        public async Task<bool> UpdateCharacterAsync(int id, UpdateCharacterRequest character)
+        public async Task<bool> UpdateCharacterAsync(int id, UpdateCharacterRequest character, CancellationToken cancellationToken)
         {
-            var existingCharacter = await context.Characters.FindAsync(id);
+            var existingCharacter = await _repository.GetByIdAsync(id, cancellationToken);
             if (existingCharacter is null) return false;
 
             existingCharacter.Name = character.Name;
             existingCharacter.Game = character.Game;
             existingCharacter.Role = character.Role;
 
-            await context.SaveChangesAsync();
+            await _repository.SaveChangesAsync(cancellationToken);
 
             return true;
         }
 
-        public async Task<bool> DeleteCharacterAsync(int id)
+        public async Task<bool> DeleteCharacterAsync(int id, CancellationToken cancellationToken)
         {
-            var existingCharacter = await context.Characters.FindAsync(id);
+            var existingCharacter = await _repository.GetByIdAsync(id, cancellationToken);
             if (existingCharacter is null) return false;
 
-            context.Characters.Remove(existingCharacter);
-            await context.SaveChangesAsync();
+            await _repository.Remove(existingCharacter);
+            await _repository.SaveChangesAsync(cancellationToken);
 
             return true;
         }

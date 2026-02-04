@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using VideoGameCharacterApi.Data;
+using VideoGameCharacterApi.Repositories;
 using VideoGameCharacterApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +51,8 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+// Register repository and service
+builder.Services.AddScoped<ICharacterRepository, EfCharacterRepository>();
 builder.Services.AddScoped<IVideoGameCharacterService, VideoGameCharacterService>();
 
 var app = builder.Build();
