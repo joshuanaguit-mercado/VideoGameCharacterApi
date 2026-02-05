@@ -6,6 +6,7 @@ using Scalar.AspNetCore;
 using VideoGameCharacterApi.Application.Interfaces;
 using VideoGameCharacterApi.Application.Services;
 using VideoGameCharacterApi.Domain.Interfaces;
+using VideoGameCharacterApi.Infrastructure.Authentication;
 using VideoGameCharacterApi.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,8 +55,9 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-// Register repository and service
+// Register repository, authentication service and application service
 builder.Services.AddScoped<ICharacterRepository, EfCharacterRepository>();
+builder.Services.AddScoped<IAuthService, JwtAuthService>();
 builder.Services.AddScoped<IVideoGameCharacterService, VideoGameCharacterService>();
 
 var app = builder.Build();
