@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using VideoGameCharacterApi.Models;
+using VideoGameCharacterApi.Domain.Entities;
 
-namespace VideoGameCharacterApi.Data;
+namespace VideoGameCharacterApi.Infrastructure.Persistence;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {

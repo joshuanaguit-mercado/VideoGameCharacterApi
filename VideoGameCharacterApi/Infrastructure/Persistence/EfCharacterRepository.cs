@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using VideoGameCharacterApi.Data;
-using VideoGameCharacterApi.Models;
+using VideoGameCharacterApi.Domain.Entities;
+using VideoGameCharacterApi.Domain.Interfaces;
 
-namespace VideoGameCharacterApi.Repositories
+namespace VideoGameCharacterApi.Infrastructure.Persistence
 {
     public class EfCharacterRepository : ICharacterRepository
     {

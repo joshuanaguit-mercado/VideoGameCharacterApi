@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using VideoGameCharacterApi.Models;
+using VideoGameCharacterApi.Domain.Entities;
 
-namespace VideoGameCharacterApi.Repositories
+namespace VideoGameCharacterApi.Domain.Interfaces
 {
     // Repository exposes intent-driven async methods. Avoid leaking IQueryable to application layer.
     public interface ICharacterRepository

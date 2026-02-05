@@ -1,4 +1,4 @@
-﻿namespace VideoGameCharacterApi.Dtos;
+﻿namespace VideoGameCharacterApi.Application.Dtos;
 
 public class CreateCharacterRequest
 {

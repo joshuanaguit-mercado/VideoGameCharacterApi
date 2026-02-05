@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
-using VideoGameCharacterApi.Data;
-using VideoGameCharacterApi.Repositories;
-using VideoGameCharacterApi.Services;
+using VideoGameCharacterApi.Application.Interfaces;
+using VideoGameCharacterApi.Application.Services;
+using VideoGameCharacterApi.Domain.Interfaces;
+using VideoGameCharacterApi.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,9 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"), 
+        b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
 
 // JWT Authentication configuration
 var jwtSection = builder.Configuration.GetSection("Jwt");

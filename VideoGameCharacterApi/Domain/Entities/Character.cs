@@ -1,6 +1,6 @@
-﻿namespace VideoGameCharacterApi.Dtos
+﻿namespace VideoGameCharacterApi.Domain.Entities
 {
-    public class CharacterResponse
+    public class Character
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;

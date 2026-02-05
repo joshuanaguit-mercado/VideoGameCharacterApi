@@ -2,11 +2,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VideoGameCharacterApi.Dtos;
-using VideoGameCharacterApi.Models;
-using VideoGameCharacterApi.Repositories;
+using VideoGameCharacterApi.Application.Dtos;
+using VideoGameCharacterApi.Application.Interfaces;
+using VideoGameCharacterApi.Domain.Entities;
+using VideoGameCharacterApi.Domain.Interfaces;
 
-namespace VideoGameCharacterApi.Services
+namespace VideoGameCharacterApi.Application.Services
 {
     // Application/service layer depends on repository abstraction
     public class VideoGameCharacterService : IVideoGameCharacterService
@@ -23,7 +24,7 @@ namespace VideoGameCharacterApi.Services
                 Id = c.Id,
                 Name = c.Name,
                 Game = c.Game,
-                Role = c.Role
+                Role = c.Role,
             }).ToList();
         }
 
