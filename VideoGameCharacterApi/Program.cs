@@ -57,6 +57,7 @@ builder.Services.AddAuthentication(options =>
 
 // Register repository, authentication service and application service
 builder.Services.AddScoped<ICharacterRepository, EfCharacterRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, JwtAuthService>();
 builder.Services.AddScoped<IVideoGameCharacterService, VideoGameCharacterService>();
 
