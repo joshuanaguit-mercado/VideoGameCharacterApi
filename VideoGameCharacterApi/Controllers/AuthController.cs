@@ -16,16 +16,19 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("token")]
-    public async Task<IActionResult> GetToken([FromBody] LoginRequest request)
+    public async Task<ActionResult> GetToken([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
-        if (request is null || string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password))
+        if (request is null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
         {
-            return BadRequest();
+            return BadRequest(new { message = "Username and password are required." });
         }
 
-        var token = await _authService.AuthenticateAsync(request);
-        if (token is null) return Unauthorized();
+        TokenResponse? tokenResponse = await _authService.AuthenticateAsync(request, cancellationToken);
+        if (tokenResponse is null)
+        {
+            return Unauthorized(new { message = "Invalid username or password." });
+        }
 
-        return Ok(new { access_token = token.AccessToken, expires_in = token.ExpiresIn });
+        return Ok(tokenResponse);
     }
 }

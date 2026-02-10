@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using VideoGameCharacterApi.Application.Interfaces;
 using VideoGameCharacterApi.Domain.Entities;
+using VideoGameCharacterApi.Domain.Interfaces;
+using VideoGameCharacterApi.Infrastructure.Persistence;
 
-namespace VideoGameCharacterApi.Infrastructure.Persistence;
+namespace VideoGameCharacterApi.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
@@ -12,6 +13,6 @@ public class UserRepository : IUserRepository
 
     public Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken)
     {
-        return _context.Set<User>().FirstOrDefaultAsync(u => u.Username == username, cancellationToken);
+        return _context.Users.FirstOrDefaultAsync(u => u.Username == username, cancellationToken);
     }
 }

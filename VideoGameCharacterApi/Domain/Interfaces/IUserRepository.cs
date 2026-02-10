@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VideoGameCharacterApi.Domain.Entities;
 
-namespace VideoGameCharacterApi.Application.Interfaces
+namespace VideoGameCharacterApi.Domain.Interfaces
 {
     public interface IUserRepository
     {

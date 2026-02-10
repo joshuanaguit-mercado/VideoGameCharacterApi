@@ -4,14 +4,15 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using VideoGameCharacterApi.Domain.Entities;
 using VideoGameCharacterApi.Domain.Interfaces;
+using VideoGameCharacterApi.Infrastructure.Persistence;
 
-namespace VideoGameCharacterApi.Infrastructure.Persistence
+namespace VideoGameCharacterApi.Infrastructure.Repositories
 {
-    public class EfCharacterRepository : ICharacterRepository
+    public class CharacterRepository : ICharacterRepository
     {
         private readonly AppDbContext _context;
 
-        public EfCharacterRepository(AppDbContext context) => _context = context;
+        public CharacterRepository(AppDbContext context) => _context = context;
 
         public async Task<List<Character>> GetAllAsync(CancellationToken cancellationToken)
             => await _context.Characters.ToListAsync(cancellationToken);
