@@ -6,32 +6,29 @@ using VideoGameCharacterApi.Domain.Entities;
 using VideoGameCharacterApi.Domain.Interfaces;
 using VideoGameCharacterApi.Infrastructure.Persistence;
 
-namespace VideoGameCharacterApi.Infrastructure.Repositories
+namespace VideoGameCharacterApi.Infrastructure.Repositories;
+
+public class CharacterRepository : ICharacterRepository
 {
-    public class CharacterRepository : ICharacterRepository
+    private readonly AppDbContext _context;
+
+    public CharacterRepository(AppDbContext context) => _context = context;
+
+    public async Task<List<Character>> GetAllAsync(CancellationToken cancellationToken)
+        => await _context.Characters.ToListAsync(cancellationToken);
+
+    public Task<Character?> GetByIdAsync(int id, CancellationToken cancellationToken)
+        => _context.Characters.FindAsync(new object[] { id }, cancellationToken).AsTask();
+
+    public void Add(Character character)
     {
-        private readonly AppDbContext _context;
-
-        public CharacterRepository(AppDbContext context) => _context = context;
-
-        public async Task<List<Character>> GetAllAsync(CancellationToken cancellationToken)
-            => await _context.Characters.ToListAsync(cancellationToken);
-
-        public Task<Character?> GetByIdAsync(int id, CancellationToken cancellationToken)
-            => _context.Characters.FindAsync(new object[] { id }, cancellationToken).AsTask();
-
-        public Task Add(Character character)
-        {
-            _context.Characters.Add(character);
-            return Task.CompletedTask;
-        }
-
-        public Task Remove(Character character)
-        {
-            _context.Characters.Remove(character);
-            return Task.CompletedTask;
-        }
-
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken) => _context.SaveChangesAsync(cancellationToken);
+        _context.Characters.Add(character);
     }
+
+    public void Remove(Character character)
+    {
+        _context.Characters.Remove(character);
+    }
+
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken) => _context.SaveChangesAsync(cancellationToken);
 }

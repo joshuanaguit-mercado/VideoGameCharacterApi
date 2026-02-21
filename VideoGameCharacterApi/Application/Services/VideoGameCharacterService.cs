@@ -12,13 +12,13 @@ namespace VideoGameCharacterApi.Application.Services
     // Application/service layer depends on repository abstraction
     public class VideoGameCharacterService : IVideoGameCharacterService
     {
-        private readonly ICharacterRepository _repository;
+        private readonly ICharacterRepository _characters;
 
-        public VideoGameCharacterService(ICharacterRepository repository) => _repository = repository;
+        public VideoGameCharacterService(ICharacterRepository repository) => _characters = repository;
 
         public async Task<List<CharacterResponse>> GetAllCharacterAsync(CancellationToken cancellationToken)
         {
-            var entities = await _repository.GetAllAsync(cancellationToken);
+            var entities = await _characters.GetAllAsync(cancellationToken);
             return entities.Select(c => new CharacterResponse
             {
                 Id = c.Id,
@@ -30,7 +30,7 @@ namespace VideoGameCharacterApi.Application.Services
 
         public async Task<CharacterResponse?> GetCharacterByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var entity = await _repository.GetByIdAsync(id, cancellationToken);
+            var entity = await _characters.GetByIdAsync(id, cancellationToken);
             if (entity is null) return null;
 
             return new CharacterResponse
@@ -51,8 +51,8 @@ namespace VideoGameCharacterApi.Application.Services
                 Role = character.Role
             };
 
-            await _repository.Add(newCharacter);
-            await _repository.SaveChangesAsync(cancellationToken);
+            _characters.Add(newCharacter);
+            await _characters.SaveChangesAsync(cancellationToken);
 
             return new CharacterResponse
             {
@@ -65,25 +65,25 @@ namespace VideoGameCharacterApi.Application.Services
 
         public async Task<bool> UpdateCharacterAsync(int id, UpdateCharacterRequest character, CancellationToken cancellationToken)
         {
-            var existingCharacter = await _repository.GetByIdAsync(id, cancellationToken);
+            var existingCharacter = await _characters.GetByIdAsync(id, cancellationToken);
             if (existingCharacter is null) return false;
 
             existingCharacter.Name = character.Name;
             existingCharacter.Game = character.Game;
             existingCharacter.Role = character.Role;
 
-            await _repository.SaveChangesAsync(cancellationToken);
+            await _characters.SaveChangesAsync(cancellationToken);
 
             return true;
         }
 
         public async Task<bool> DeleteCharacterAsync(int id, CancellationToken cancellationToken)
         {
-            var existingCharacter = await _repository.GetByIdAsync(id, cancellationToken);
+            var existingCharacter = await _characters.GetByIdAsync(id, cancellationToken);
             if (existingCharacter is null) return false;
 
-            await _repository.Remove(existingCharacter);
-            await _repository.SaveChangesAsync(cancellationToken);
+            _characters.Remove(existingCharacter);
+            await _characters.SaveChangesAsync(cancellationToken);
 
             return true;
         }

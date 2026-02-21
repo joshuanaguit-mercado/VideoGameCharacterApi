@@ -24,6 +24,12 @@ public class JwtService : IJwtService
         var key = jwtSection.GetValue<string>("Key");
         var expiryMinutes = jwtSection.GetValue<int>("TokenExpiryMinutes");
 
+        // Guard against null or empty key to avoid passing null into Encoding.GetBytes
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new InvalidOperationException("JWT configuration error: 'Jwt:Key' is not configured or is empty. Please set Jwt:Key in configuration.");
+        }
+
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, tokenRequest.Username),

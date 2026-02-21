@@ -10,8 +10,8 @@ namespace VideoGameCharacterApi.Domain.Interfaces
     {
         Task<List<Character>> GetAllAsync(CancellationToken cancellationToken);
         Task<Character?> GetByIdAsync(int id, CancellationToken cancellationToken);
-        Task Add(Character character);
-        Task Remove(Character character);
+        void Add(Character character);
+        void Remove(Character character);
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
